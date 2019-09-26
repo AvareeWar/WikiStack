@@ -4,7 +4,7 @@ const { addPage, editPage, main, userList, userPages, wikiPage } = require('../v
 const { Page, User } = require("../models");
 
 
-console.log('here');
+// console.log('here');
 
 router.get('/', async (req, res, next)=>{
     const allPages = await Page.findAll();
@@ -22,7 +22,9 @@ router.get('/add', async (req, res, next)=>{
 router.get('/:page', async (req,res,next) =>{
     try{
         const foundPage = await Page.findOne({where: {slug : req.params.page}})
-    res.send(wikiPage(foundPage,''));
+        console.log('test', foundPage);
+        const foundUser = await User.findOne({where: {id: foundPage.dataValues.authorId}})
+    res.send(wikiPage(foundPage, foundUser));
     }
     catch(err){next(err)}
 })
@@ -31,7 +33,7 @@ router.post('/', async (req, res, next) => {
 
   // STUDENT ASSIGNMENT:
   // add definitions for `title` and `content`
-  console.log('reqBody', req.body.content);
+//   console.log('reqBody', req.body.content);
   try {
 
 //   const page = new Page({
