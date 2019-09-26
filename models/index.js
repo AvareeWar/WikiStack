@@ -6,11 +6,9 @@ const Page = db.define('page', {
   title: {
     type: Sequelize.STRING,
     allowNull: false
-    
   },
   slug: {
-    type: Sequelize.STRING,
-    allowNull: false
+    type: Sequelize.STRING
   },
   content: {
     type: Sequelize.TEXT,
@@ -24,8 +22,8 @@ const Page = db.define('page', {
 const User = db.define('user', {
   name: {
     type: Sequelize.STRING,
-    allowNull: false,
-    validate: {is: ["^[a-z]+$",'i']}
+    allowNull: false
+    // validate: {}
   },
   email: {
     type: Sequelize.STRING,
@@ -33,6 +31,18 @@ const User = db.define('user', {
     validate: {isEmail: true}
   }
 });
+
+function sanitize(str){
+  return str.replace(/\s+/g, '_').replace(/\W/g, '');
+}
+
+Page.belongsTo(User, { as:'author' });
+
+
+Page.beforeValidate((pageInstance) => {
+  pageInstance.slug = sanitize(pageInstance.title);
+})
+
 
 module.exports = { Page, User, db };
 
